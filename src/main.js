@@ -6,9 +6,16 @@ import App from './App'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import router from './router'
+import '@/assets/css/base.css'
+
+// 导入自定义的http插件。
+import MyHttp from '@/plugins/http.js'
 
 // 使用UI组件
 Vue.use(ElementUI)
+
+// 使用自定义的http插件。
+Vue.use(MyHttp)
 
 Vue.config.productionTip = false
 
