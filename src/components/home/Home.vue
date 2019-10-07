@@ -14,7 +14,7 @@
                 </el-col>
                 <el-col :span="4">
                     <div class="loginout">
-                        <a href="">退出</a>
+                        <a href="#" @click.prevent="handleLoginout()">退出</a>
                     </div>
                 </el-col>
             </el-row>
@@ -98,6 +98,13 @@ export default {
     return {
 
     }
+  },
+  methods:{
+      handleLoginout(){
+          localStorage.clear()
+          this.$message.success('退出成功')
+          this.$router.push('/login')
+      }
   },
   beforeCreate () {
       // 判断 是否有token。如果没有直接返回登录页。
