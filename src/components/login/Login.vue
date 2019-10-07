@@ -26,16 +26,19 @@ export default {
     }
   },
   methods: {
-    handleLogin () {
-      this.$http.post('login', this.formdata)
-        .then(res => {
-          // 结构赋值
-          const {data, meta: {msg, status}} = res.data
-          if (status === 200) {
-            console.log('成功')
-            this.$router.push('/')
-          }
-        })
+    // 使用es7的async,awite,使代码看起来像同步
+    async handleLogin () {
+      const res = await this.$http.post('login', this.formdata)
+      // 结构赋值
+      const {data, meta: {msg, status}} = res.data
+      if (status === 200) {
+        // console.log(data)
+        this.$router.push('/')
+        console.log(this.$message)
+        this.$message.success(msg)
+      } else {
+        this.$message.warning(msg)
+      }
     }
   }
 }
