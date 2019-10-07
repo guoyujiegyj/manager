@@ -6,6 +6,7 @@ import Login from '@/components/login/Login'
 
 // home组件
 import Home from '@/components/home/Home'
+import Users from '@/components/users/Users'
 Vue.use(Router)
 
 export default new Router({
@@ -17,7 +18,13 @@ export default new Router({
     },
     {
       path: '/',
-      component: Home
+      component: Home,
+      children: [
+        {
+          path: '/users',
+          component: Users
+        }
+      ]
     }
   ]
 })
