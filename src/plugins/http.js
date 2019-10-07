@@ -2,7 +2,8 @@ import axios from 'axios'
 const MyHttp = {}
 
 MyHttp.install = (Vue) => {
-    // 4. 添加实例方法
-    Vue.prototype.axios = axios
+  // 4. 添加实例方法
+  axios.defaults.baseURL = 'http://localhost:8888/api/private/v1/'
+  Vue.prototype.$http = axios
 }
 export default MyHttp

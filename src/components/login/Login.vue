@@ -3,12 +3,12 @@
     <el-form class="login-form" label-position="right" label-width="80px" :model="formdata">
       <h2>用户登录</h2>
       <el-form-item label="用户名：">
-        <el-input v-model="formdata.uname"></el-input>
+        <el-input v-model="formdata.username"></el-input>
       </el-form-item>
       <el-form-item label="密码：">
-        <el-input v-model="formdata.upwd"></el-input>
+        <el-input v-model="formdata.password"></el-input>
       </el-form-item>
-      <el-button class="login-btn" type="primary">登录</el-button>
+      <el-button class="login-btn" @click.prevent="handleLogin()" type="primary">登录</el-button>
 
     </el-form>
   </div>
@@ -20,9 +20,22 @@ export default {
   data () {
     return {
       formdata: {
-        uname: '',
-        upwd: ''
+        username: '',
+        password: ''
       }
+    }
+  },
+  methods: {
+    handleLogin () {
+      this.$http.post('login', this.formdata)
+        .then(res => {
+          // 结构赋值
+          const {data, meta: {msg, status}} = res.data
+          if (status === 200) {
+            console.log('成功')
+            this.$router.push('/')
+          }
+        })
     }
   }
 }
