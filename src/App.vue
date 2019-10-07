@@ -12,7 +12,7 @@ export default{
 </script>
 
 <style scoped>
-  #ap{
+  #app{
     height:100%;
   }
 </style>

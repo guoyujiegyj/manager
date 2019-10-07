@@ -32,7 +32,8 @@ export default {
       // 结构赋值
       const {data, meta: {msg, status}} = res.data
       if (status === 200) {
-        // console.log(data)
+         console.log(data)
+        localStorage.setItem('token',data.token)
         this.$router.push('/')
         console.log(this.$message)
         this.$message.success(msg)
