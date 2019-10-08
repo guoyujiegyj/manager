@@ -43,12 +43,24 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="address"
         label="用户状态">
+        <template slot-scope="scope">
+          <el-switch v-model="scope.row.mg_state" active-color="#13ce66" 
+          inactive-color="#ff4949">
+          </el-switch>
+
+        </template>
       </el-table-column>
       <el-table-column
         prop="address"
         label="操作">
+        <template slot-scope="scope">
+          <el-row>
+            <el-button size="mini" plain type="primary" icon="el-icon-edit" circle></el-button>
+            <el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
+            <el-button size="mini" plain type="danger" icon="el-icon-delete" circle></el-button>
+          </el-row>
+        </template>
       </el-table-column>
     </el-table>
   </el-card>
@@ -82,7 +94,7 @@ export default {
        const {meta:{status,msg},data:{total,users}} = res.data
        if(status === 200){
          this.userlist = users
-        //  console.log(this.userlist)
+         console.log(this.userlist)
          this.total=total
          this.$message.success(msg)
        }else{
