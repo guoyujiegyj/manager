@@ -63,6 +63,18 @@
         </template>
       </el-table-column>
     </el-table>
+    <!--分页-->
+    <div class="block">
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="pagenum"
+      :page-sizes="[1,2,3]"
+      :page-size="pagesize"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total">
+    </el-pagination>
+  </div>
   </el-card>
 </template>
 
@@ -73,7 +85,7 @@ export default {
      userlist: [],
      // 分页数据
      pagenum: 1,
-     pagesize: 3,
+     pagesize: 2,
      query: '',
      total: -1,
     }
@@ -100,6 +112,19 @@ export default {
        }else{
          this.$message.warning(msg)
        }
+    },
+    // 当每页条数改变时触发下面方法。
+    handleSizeChange(val) {
+      console.log(val)
+      this.pagenum = 1
+      this.pagesize = val
+      this.getUrlList()
+      console.log(`每页 ${val} 条`);
+    },
+    handleCurrentChange(val) {
+      this.pagenum = val
+      this.getUrlList()
+      console.log(`当前页: ${val}`);
     }
   }
 }
