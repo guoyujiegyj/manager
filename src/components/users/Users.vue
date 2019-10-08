@@ -7,8 +7,8 @@
       <el-breadcrumb-item>用户列表</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 搜索框-->
-    <el-input placeholder="请输入内容" v-model="query" class="input-with-select">
-      <el-button slot="append" icon="el-icon-search"></el-button>
+    <el-input clearable @clear="unloadList" placeholder="请输入内容" v-model="query" class="input-with-select">
+      <el-button @click="searchUser" slot="append" icon="el-icon-search"></el-button>
     </el-input>
     <el-button type="primary" plain>添加用户</el-button>
     <!--表格-->
@@ -94,6 +94,7 @@ export default {
    this.getUrlList()
   },
   methods:{
+    // 获取用户数据。
     async getUrlList(){
       // 获取token值。
       const AUTH_TOKEN=localStorage.getItem('token')
@@ -106,25 +107,30 @@ export default {
        const {meta:{status,msg},data:{total,users}} = res.data
        if(status === 200){
          this.userlist = users
-         console.log(this.userlist)
+        //  console.log(this.userlist)
          this.total=total
-         this.$message.success(msg)
        }else{
          this.$message.warning(msg)
        }
     },
+    // 用户搜索。
+    searchUser(){
+      this.getUrlList()
+    },
+    // 搜索框点击X时触发。重新获取数据。
+    unloadList(){
+      this.getUrlList()
+    },
     // 当每页条数改变时触发下面方法。
     handleSizeChange(val) {
-      console.log(val)
       this.pagenum = 1
       this.pagesize = val
       this.getUrlList()
-      console.log(`每页 ${val} 条`);
     },
+    // 当页码改变时。
     handleCurrentChange(val) {
       this.pagenum = val
       this.getUrlList()
-      console.log(`当前页: ${val}`);
     }
   }
 }
