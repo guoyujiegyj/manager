@@ -124,7 +124,7 @@
       <el-form-item label="用户角色" :label-width="formLabelWidth">
         <!-- 当select的v-model和option的value一样时，第一个option显示对应 的值。-->
         <el-select v-model="currentRolId" placeholder="请选择活动区域">
-          <el-option label="请选择" ></el-option>
+          <!-- <el-option label="请选择" :value="-1"></el-option> -->
           <!-- lable的值是option可以看到的值。value值是option内隐藏的值。-->
           <el-option :label="item.roleName" v-for="(item,i) in roles" :key="i" :value="item.id"></el-option>
         </el-select>
@@ -132,7 +132,7 @@
     </el-form>
     <div slot="footer" class="dialog-footer">
       <el-button @click="dialogFormVisibleRol = false">取 消</el-button>
-      <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+      <el-button type="primary" @click="setRol">确 定</el-button>
     </div>
   </el-dialog>
   </el-card>
@@ -165,7 +165,8 @@ export default {
      formLabelWidth:"300",
      currentRolId:-1,
      roles:[],
-     currentUserName:''
+     currentUserName:'',
+     currentUserId:-1
     }
   },
   created(){
@@ -278,10 +279,17 @@ export default {
         this.$message.success(this.data.meta.msg)
       }
     },
+    // 确认修改角色时
+    async setRol() {
+      const res = await this.$http.put(`users/${this.currentUserId}/role`,
+      {rid:this.currentRolId})
+      this.dialogFormVisibleRol=false
+    },
     // 角色管理
     async openRol(user) {
       console.log(user)
       this.currentUserName=user.username
+      this.currentUserId=user.id
       this.dialogFormVisibleRol = true
 
       // 发送请求，获取角色列表。

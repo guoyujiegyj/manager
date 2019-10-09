@@ -101,8 +101,8 @@ export default {
 
     }
   },
-  methods:{
-      handleLoginout(){
+  methods: {
+      handleLoginout() {
           localStorage.clear()
           this.$message.success('退出成功')
           this.$router.push('/login')
