@@ -194,7 +194,7 @@ export default {
     },
     // 获取用户数据。
     async getUrlList() {
-      // 获取token值。
+      // 获取token值。这两行代码在axios 插件里写了。
       const AUTH_TOKEN=localStorage.getItem('token')
       // 设置请求头。
       this.$http.defaults.headers.common['Authorization'] = AUTH_TOKEN

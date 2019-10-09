@@ -4,8 +4,19 @@
 </template>
 <script>
 export default {
-    data(){
+    data() {
         return{
+            roleLists:[]
+        }
+    },
+    created() {
+        this.getRoleList()
+    },
+    methods: {
+        async getRoleList() {
+           
+            const res = await this.$http.get('rights/list')
+            this.roleList=res.data.data
         }
     }
 }
