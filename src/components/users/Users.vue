@@ -58,7 +58,7 @@
         <template slot-scope="scope">
           <el-row>
             <el-button @click="openEdit(scope.row)" size="mini" plain type="primary" icon="el-icon-edit" circle></el-button>
-            <el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
+            <el-button @click="openRol(scope.row)" size="mini" plain type="success" icon="el-icon-check" circle></el-button>
             <el-button @click="openDelete(scope.row.id)" size="mini" plain type="danger" icon="el-icon-delete" circle></el-button>
           </el-row>
         </template>
@@ -115,6 +115,26 @@
       <el-button type="primary" @click="editSure">确 定</el-button>
     </div>
   </el-dialog>
+  <!-- 角色管理模态框-->
+  <el-dialog title="角色管理" :visible.sync="dialogFormVisibleRol">
+    <el-form :model="form">
+      <el-form-item label="用户姓名" :label-width="formLabelWidth">
+        {{this.currentUserName}}
+      </el-form-item>
+      <el-form-item label="用户角色" :label-width="formLabelWidth">
+        <!-- 当select的v-model和option的value一样时，第一个option显示对应 的值。-->
+        <el-select v-model="currentRolId" placeholder="请选择活动区域">
+          <el-option label="请选择" ></el-option>
+          <!-- lable的值是option可以看到的值。value值是option内隐藏的值。-->
+          <el-option :label="item.roleName" v-for="(item,i) in roles" :key="i" :value="item.id"></el-option>
+        </el-select>
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="dialogFormVisibleRol = false">取 消</el-button>
+      <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+    </div>
+  </el-dialog>
   </el-card>
 </template>
 
@@ -128,16 +148,24 @@ export default {
      pagesize: 2,
      query: '',
      total: -1,
-     // 模态框
+     // 添加用户框
      dialogFormVisibleAdd: false,
+     // 编辑用户
      dialogFormVisibleEdit:false,
+     // 角色管理
+     dialogFormVisibleRol:false,
      lableWidth:'130',
      form:{
        username: '',
        password: '',
        email: '',
        mobile: '',
-     }
+     },
+     // 角色
+     formLabelWidth:"300",
+     currentRolId:-1,
+     roles:[],
+     currentUserName:''
     }
   },
   created(){
@@ -249,6 +277,26 @@ export default {
       if(res.data.meta.statu===200) {
         this.$message.success(this.data.meta.msg)
       }
+    },
+    // 角色管理
+    async openRol(user) {
+      console.log(user)
+      this.currentUserName=user.username
+      this.dialogFormVisibleRol = true
+
+      // 发送请求，获取角色列表。
+      const res1 = await this.$http.get('roles')
+      console.log(res1)
+      // 所有角色列表获取成功。
+      this.roles=res1.data.data
+
+      // 发送请求，获取当前用户角色id
+      const res = await this.$http.get(`users/${user.id}`)
+      if(res.data.meta.status===200){
+         // 当前用户rid获取成功。 
+         this.currentRolId=res.data.data.rid
+      }
+      // const res = await this.$http.
     },
     // 当每页条数改变时触发下面方法。
     handleSizeChange(val) {
