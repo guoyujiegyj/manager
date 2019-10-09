@@ -46,7 +46,7 @@
       <el-table-column
         label="用户状态">
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.mg_state" active-color="#13ce66" 
+          <el-switch @change="changeStatus(scope.row)" v-model="scope.row.mg_state" active-color="#13ce66" 
           inactive-color="#ff4949">
           </el-switch>
 
@@ -241,6 +241,14 @@ export default {
     // 搜索框点击X时触发。重新获取数据。
     unloadList() {
       this.getUrlList()
+    },
+    // 修改用户状态
+    async changeStatus(user) {
+      const res = await this.$http.put(`users/${user.id}/state/${user.mg_state}`)
+      console.log(res)
+      if(res.data.meta.statu===200) {
+        this.$message.success(this.data.meta.msg)
+      }
     },
     // 当每页条数改变时触发下面方法。
     handleSizeChange(val) {
