@@ -151,28 +151,28 @@ export default {
      // 添加用户框
      dialogFormVisibleAdd: false,
      // 编辑用户
-     dialogFormVisibleEdit:false,
+     dialogFormVisibleEdit: false,
      // 角色管理
-     dialogFormVisibleRol:false,
-     lableWidth:'130',
-     form:{
+     dialogFormVisibleRol: false,
+     lableWidth: '130',
+     form: {
        username: '',
        password: '',
        email: '',
-       mobile: '',
+       mobile: ''
      },
      // 角色
-     formLabelWidth:"300",
-     currentRolId:-1,
-     roles:[],
-     currentUserName:'',
-     currentUserId:-1
+     formLabelWidth: '300',
+     currentRolId: -1,
+     roles: [],
+     currentUserName: '',
+     currentUserId: -1
     }
   },
-  created(){
+  created() {
     this.getUrlList()
   },
-  methods:{
+  methods: {
     // 打开编辑用户,参数是传来的用户数据。
     openEdit(user) {
       // 显示用户修改框
@@ -202,7 +202,7 @@ export default {
       const res = await this.$http.get(
         `users?query=${this.query}&pagenum=${this.pagenum}&pagesize=${this.pagesize}`)
         // console.log(res)
-        const {meta:{status,msg},data:{total,users}} = res.data
+        const {meta: {status,msg},data: {total,users}} = res.data
         if(status === 200){
           this.userlist = users
           //  console.log(this.userlist)
