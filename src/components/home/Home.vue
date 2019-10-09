@@ -38,7 +38,7 @@
                             <i class="el-icon-location"></i>
                             <span>权限管理</span>
                         </template>
-                        <el-menu-item index="1-1">
+                        <el-menu-item index="right">
                             <i class="el-icon-success"></i>
                             <span>角色列表</span>
                         </el-menu-item>
