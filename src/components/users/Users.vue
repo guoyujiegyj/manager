@@ -14,6 +14,7 @@
     <!--表格-->
     <el-table
       :data="userlist"
+      height="350px"
       style="width: 100%">
       <el-table-column
       type="index"
@@ -56,7 +57,7 @@
         label="操作">
         <template slot-scope="scope">
           <el-row>
-            <el-button size="mini" plain type="primary" icon="el-icon-edit" circle></el-button>
+            <el-button @click="openEdit(scope.row.id)" size="mini" plain type="primary" icon="el-icon-edit" circle></el-button>
             <el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
             <el-button @click="openDelete(scope.row.id)" size="mini" plain type="danger" icon="el-icon-delete" circle></el-button>
           </el-row>
@@ -76,7 +77,28 @@
     </el-pagination>
   </div>
   <!-- 添加用户的模态框--->
-  <el-dialog title="填写用户信息" :visible.sync="dialogFormVisible">
+  <el-dialog title="填写用户信息" :visible.sync="dialogFormVisibleAdd">
+    <el-form :model="form">
+      <el-form-item label="姓名:" :label-width='lableWidth'>
+        <el-input v-model="form.username" autocomplete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="密码:" :label-width="lableWidth">
+        <el-input v-model="form.password" autocomplete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="邮箱:" :label-width="lableWidth">
+        <el-input v-model="form.email" autocomplete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="电话:" :label-width="lableWidth">
+        <el-input v-model="form.mobile" autocomplete="off"></el-input>
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="dialogFormVisible = false">取 消</el-button>
+      <el-button type="primary" @click="addSure">确 定</el-button>
+    </div>
+  </el-dialog>
+  <!-- 编辑用户模态框-->
+  <el-dialog title="修改用户信息" :visible.sync="dialogFormVisibleEdit">
     <el-form :model="form">
       <el-form-item label="姓名:" :label-width='lableWidth'>
         <el-input v-model="form.username" autocomplete="off"></el-input>
@@ -110,7 +132,8 @@ export default {
      query: '',
      total: -1,
      // 模态框
-     dialogFormVisible: false,
+     dialogFormVisibleAdd: false,
+     dialogFormVisibleEdit:false,
      lableWidth:'130',
      form:{
        username: '',
@@ -121,9 +144,14 @@ export default {
     }
   },
   created(){
-   this.getUrlList()
+    this.getUrlList()
   },
   methods:{
+    // 打开编辑用户
+    openEdit(id) {
+      // 显示用户修改框
+      this.dialogFormVisibleEdit = true
+    },
     // 获取用户数据。
     async getUrlList() {
       // 获取token值。
@@ -133,14 +161,14 @@ export default {
       // 发送请求。
       const res = await this.$http.get(
         `users?query=${this.query}&pagenum=${this.pagenum}&pagesize=${this.pagesize}`)
-      // console.log(res)
-       const {meta:{status,msg},data:{total,users}} = res.data
-       if(status === 200){
-         this.userlist = users
-        //  console.log(this.userlist)
-         this.total=total
+        // console.log(res)
+        const {meta:{status,msg},data:{total,users}} = res.data
+        if(status === 200){
+          this.userlist = users
+          //  console.log(this.userlist)
+          this.total=total
        }else{
-         this.$message.warning(msg)
+          this.$message.warning(msg)
        }
     },
     // 删除模态框方法。copy自elementUI
@@ -195,7 +223,7 @@ export default {
       }
     },
     addUser() {
-      this.dialogFormVisible=true
+      this.dialogFormVisibleAdd=true
     },
     // 搜索框点击X时触发。重新获取数据。
     unloadList() {
