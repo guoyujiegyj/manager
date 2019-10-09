@@ -10,7 +10,7 @@
     <el-input clearable @clear="unloadList" placeholder="请输入内容" v-model="query" class="input-with-select">
       <el-button @click="searchUser" slot="append" icon="el-icon-search"></el-button>
     </el-input>
-    <el-button type="primary" plain>添加用户</el-button>
+    <el-button @click="addUser" type="primary" plain>添加用户</el-button>
     <!--表格-->
     <el-table
       :data="userlist"
@@ -58,7 +58,7 @@
           <el-row>
             <el-button size="mini" plain type="primary" icon="el-icon-edit" circle></el-button>
             <el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
-            <el-button size="mini" plain type="danger" icon="el-icon-delete" circle></el-button>
+            <el-button @click="openDelete(scope.row.id)" size="mini" plain type="danger" icon="el-icon-delete" circle></el-button>
           </el-row>
         </template>
       </el-table-column>
@@ -69,12 +69,33 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="pagenum"
-      :page-sizes="[1,2,3]"
+      :page-sizes="[2,4,5,6]"
       :page-size="pagesize"
       layout="total, sizes, prev, pager, next, jumper"
       :total="total">
     </el-pagination>
   </div>
+  <!-- 添加用户的模态框--->
+  <el-dialog title="填写用户信息" :visible.sync="dialogFormVisible">
+    <el-form :model="form">
+      <el-form-item label="姓名:" :label-width='lableWidth'>
+        <el-input v-model="form.username" autocomplete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="密码:" :label-width="lableWidth">
+        <el-input v-model="form.password" autocomplete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="邮箱:" :label-width="lableWidth">
+        <el-input v-model="form.email" autocomplete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="电话:" :label-width="lableWidth">
+        <el-input v-model="form.mobile" autocomplete="off"></el-input>
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="dialogFormVisible = false">取 消</el-button>
+      <el-button type="primary" @click="addSure">确 定</el-button>
+    </div>
+  </el-dialog>
   </el-card>
 </template>
 
@@ -88,6 +109,15 @@ export default {
      pagesize: 2,
      query: '',
      total: -1,
+     // 模态框
+     dialogFormVisible: false,
+     lableWidth:'130',
+     form:{
+       username: '',
+       password: '',
+       email: '',
+       mobile: '',
+     }
     }
   },
   created(){
@@ -95,7 +125,7 @@ export default {
   },
   methods:{
     // 获取用户数据。
-    async getUrlList(){
+    async getUrlList() {
       // 获取token值。
       const AUTH_TOKEN=localStorage.getItem('token')
       // 设置请求头。
@@ -113,12 +143,62 @@ export default {
          this.$message.warning(msg)
        }
     },
+    // 删除模态框方法。copy自elementUI
+    openDelete(id) {
+        this.$confirm('是否继续删除该用户?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async () => {
+          // 发送请求
+          const res = await this.$http.delete(`users/${id}`)
+          const {meta:{msg,status}} = res.data
+          if(status===200){
+            // 删除成功后默认回到第一页
+            this.pagenum=1
+            this.$message.success(msg)
+          }
+          // 重新获取用户列表
+          this.getUrlList()
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+      },
     // 用户搜索。
     searchUser(){
       this.getUrlList()
     },
+    // 确认添加时
+     async addSure() {
+      const res = await this.$http.post('users',this.form)
+      // 结构赋值
+      const {meta:{msg,status},data} = res.data
+      if(status===201){
+        // $message是elementui的对象
+        this.$message.success(msg)
+        // 添加成功时重新获取用户数据执行
+        this.getUrlList()
+        this.form = {}
+        // 添加成功，关闭窗口。
+        this.dialogFormVisible = false
+      }else{
+        // 未添加成功，轻空输入框。
+        this.$message.warning(msg)
+        this.form.username = ''
+      }
+    },
+    addUser() {
+      this.dialogFormVisible=true
+    },
     // 搜索框点击X时触发。重新获取数据。
-    unloadList(){
+    unloadList() {
       this.getUrlList()
     },
     // 当每页条数改变时触发下面方法。
@@ -140,8 +220,17 @@ export default {
   .box-card{
     height:100%; 
   }
-  .input-with-select{
-    width:400px;
-    margin-top:20px;
+  /** 模态框的input宽度 */
+  .el-input{
+    width:85%;
+  }
+  /** 搜索框的宽度 */
+  .input-with-select[data-v-f5554e7e]{
+    width:30%;
+    margin:20px 0;
+  }
+  /** 分页 */
+  .block{
+    margin-top:18px;
   }
 </style>
