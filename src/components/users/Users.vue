@@ -14,13 +14,13 @@
     <!--表格-->
     <el-table
       :data="userlist"
-      height="350px"
+      height="250px"
       style="width: 100%">
       <el-table-column
       type="index"
      
         label="#"
-        width="180">
+        width="100">
       </el-table-column>
       <el-table-column
         prop="username"
@@ -29,7 +29,7 @@
       </el-table-column>
       <el-table-column
         prop="email"
-        label="邮箱">
+        label="邮箱">   
       </el-table-column>
       <el-table-column
         prop="mobile"
@@ -57,7 +57,7 @@
         label="操作">
         <template slot-scope="scope">
           <el-row>
-            <el-button @click="openEdit(scope.row.id)" size="mini" plain type="primary" icon="el-icon-edit" circle></el-button>
+            <el-button @click="openEdit(scope.row)" size="mini" plain type="primary" icon="el-icon-edit" circle></el-button>
             <el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
             <el-button @click="openDelete(scope.row.id)" size="mini" plain type="danger" icon="el-icon-delete" circle></el-button>
           </el-row>
@@ -101,10 +101,7 @@
   <el-dialog title="修改用户信息" :visible.sync="dialogFormVisibleEdit">
     <el-form :model="form">
       <el-form-item label="姓名:" :label-width='lableWidth'>
-        <el-input v-model="form.username" autocomplete="off"></el-input>
-      </el-form-item>
-      <el-form-item label="密码:" :label-width="lableWidth">
-        <el-input v-model="form.password" autocomplete="off"></el-input>
+        <el-input v-model="form.username" disabled autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item label="邮箱:" :label-width="lableWidth">
         <el-input v-model="form.email" autocomplete="off"></el-input>
@@ -114,8 +111,8 @@
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button @click="dialogFormVisible = false">取 消</el-button>
-      <el-button type="primary" @click="addSure">确 定</el-button>
+      <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
+      <el-button type="primary" @click="editSure">确 定</el-button>
     </div>
   </el-dialog>
   </el-card>
@@ -147,10 +144,24 @@ export default {
     this.getUrlList()
   },
   methods:{
-    // 打开编辑用户
-    openEdit(id) {
+    // 打开编辑用户,参数是传来的用户数据。
+    openEdit(user) {
       // 显示用户修改框
       this.dialogFormVisibleEdit = true
+      // 对form赋值，显示在编辑表单。
+      this.form=user
+
+    },
+    // 确认修改用户信息
+    async editSure() {
+      // 次方法执行时，openEdit方法已经执行，所以id可以从哪个form对象获取。
+      const res =  await this.$http.put(`users/${this.form.id}`,this.form)
+      if(res.data.meta.status === 200) {
+        this.$message.success(res.data.meta.msg)
+        
+        this.dialogFormVisibleEdit = false
+
+      }
     },
     // 获取用户数据。
     async getUrlList() {
@@ -223,7 +234,9 @@ export default {
       }
     },
     addUser() {
+      this.form={}
       this.dialogFormVisibleAdd=true
+      
     },
     // 搜索框点击X时触发。重新获取数据。
     unloadList() {
