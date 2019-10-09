@@ -6,11 +6,11 @@ import Login from '@/components/login/Login'
 
 // home组件
 import Home from '@/components/home/Home'
-<<<<<<< HEAD
 
-=======
 import Users from '@/components/users/Users'
->>>>>>> dev-users
+
+import Right from '@/components/right/Right'
+
 Vue.use(Router)
 
 export default new Router({
@@ -27,6 +27,10 @@ export default new Router({
         {
           path: '/users',
           component: Users
+        },
+        {
+          path: '/right',
+          component: Right
         }
       ]
     }
