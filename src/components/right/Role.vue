@@ -7,9 +7,27 @@
     <el-table :data="roleList" height="400px" style="width: 100%">
       <el-table-column type="expand">
           <template slot-scope="scope">
-              <div>
-                  
-              </div>
+                <el-row v-for='(item1, id) in scope.row.children' :key="id">
+                    <!--第一列-->
+                    <el-col :span='4'>
+                        <el-tag type="success" >{{item1.authName}}</el-tag>
+                    </el-col>
+                    <!--第二列：后面的两大列。-->
+                    <el-col :span='20'>
+                        <!--此处的行是视觉上第二列的行-->
+                        <el-row v-for='(item2,i) in item1.children' :key='i'>
+                            <el-col :span='4'> 
+                                <el-tag type="info">{{item2.authName}}</el-tag>
+                            </el-col>
+                            <!--最后一列-->
+                            <el-col :span="20">
+                                <el-tag type="warning " v-for='(item3,i) in item2.children' :key='i'>
+                                    {{item3.authName}}
+                                </el-tag>
+                            </el-col>
+                        </el-row>
+                    </el-col>
+                </el-row>
           </template>
       </el-table-column>   
       <el-table-column type="index" label="#" width="100"></el-table-column>
@@ -44,6 +62,7 @@ export default {
         async getRoleList() {
             const res = await this.$http.get('roles')
             this.roleList=res.data.data
+            console.log(res)
         }
     }
 }
