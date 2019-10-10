@@ -33,12 +33,13 @@
                         </el-menu-item>
 
                     </el-submenu>
+                    <!-- index相当于roter-link的to.-->
                     <el-submenu index="2">
                         <template slot="title">
                             <i class="el-icon-location"></i>
                             <span>权限管理</span>
                         </template>
-                        <el-menu-item index="1-1">
+                        <el-menu-item index="role">
                             <i class="el-icon-success"></i>
                             <span>角色列表</span>
                         </el-menu-item>
