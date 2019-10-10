@@ -4,7 +4,14 @@
     <my-bread level1="权限管理" level2="角色列表"></my-bread>
     <el-button type="primary">添加角色</el-button>
     <!--表格-->
-    <el-table :data="roleList" height="340px" style="width: 100%">
+    <el-table :data="roleList" height="400px" style="width: 100%">
+      <el-table-column type="expand">
+          <template slot-scope="scope">
+              <div>
+                  
+              </div>
+          </template>
+      </el-table-column>   
       <el-table-column type="index" label="#" width="100"></el-table-column>
       <el-table-column prop="roleName" label="角色名称" width="180"></el-table-column>
       <el-table-column prop="roleDesc" label="角色描述"></el-table-column>
