@@ -3,7 +3,7 @@
     <!-- 使用自定义组件，并传值-->
     <my-bread level1="权限管理" level2="权限列表"></my-bread>
     <!-- 权限列表-->
-    <el-table :data='roleLists' height='460px' border style='width: 100%'>
+    <el-table :data='rightLists' height='460px' border style='width: 100%'>
         <!-- label是表头。prop是值。-->
         <el-table-column label='#' type='index' width='180'></el-table-column>
         <el-table-column prop='authName' label='权限名称' width='180'>  </el-table-column>
@@ -23,17 +23,17 @@
 export default {
     data() {
         return{
-            roleLists: []
+            rightLists: []
         }
     },
     created() {
-        this.getRoleList()
+        this.getRightList()
     },
     methods: {
-        async getRoleList() {
+        async getRightList() {
            
             const res = await this.$http.get('rights/list')
-            this.roleLists=res.data.data
+            this.rightLists=res.data.data
         }
     }
 }
