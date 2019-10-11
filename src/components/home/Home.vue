@@ -22,69 +22,19 @@
         <el-container>
             <el-aside class="aside" width="200px">
                 <el-menu unique-opened router>
-                    <el-submenu index="1">
-                        <template slot="title">
+                    <el-submenu :index="item1.order" v-for='(item1,index) in menu' :key='index'>
+                        <!--一级菜单 -->
+                        <template slot="title" >
                             <i class="el-icon-location"></i>
-                            <span>用户管理</span>
+                            <span>{{item1.authName}}</span>
                         </template>
-                        <el-menu-item index="users">
+                        <!-- 二级菜单-->
+                        <!--item2.path是路由标识，和index.js里的配置一致。-->
+                        <el-menu-item :index="item2.path" v-for='(item2,index) in item1.children' :key='index'>
                             <i class="el-icon-success"></i>
-                            <span>用户列表</span>
+                            <span>{{item2.authName}}</span>
                         </el-menu-item>
 
-                    </el-submenu>
-                    <!-- index相当于roter-link的to.-->
-                    <el-submenu index="2">
-                        <template slot="title">
-                            <i class="el-icon-location"></i>
-                            <span>权限管理</span>
-                        </template>
-                        <el-menu-item index="role">
-                            <i class="el-icon-success"></i>
-                            <span>角色列表</span>
-                        </el-menu-item>
-                        <el-menu-item index="right">
-                            <i class="el-icon-success"></i>
-                            <span>权限列表</span>
-                        </el-menu-item>
-                    </el-submenu>
-                    <el-submenu index="3">
-                        <template slot="title">
-                            <i class="el-icon-location"></i>
-                            <span>商品管理</span>
-                        </template>
-                        <el-menu-item index="1-1">
-                            <i class="el-icon-success"></i>
-                            <span>商品列表</span>
-                        </el-menu-item>
-                        <el-menu-item index="1-2">
-                            <i class="el-icon-success"></i>
-                            <span>分类参数</span>
-                        </el-menu-item>
-                         <el-menu-item index="1-3">
-                            <i class="el-icon-success"></i>
-                            <span>商品分类</span>
-                        </el-menu-item>
-                    </el-submenu>
-                    <el-submenu index="4">
-                        <template slot="title">
-                            <i class="el-icon-location"></i>
-                            <span>订单管理</span>
-                        </template>
-                        <el-menu-item index="1-1">
-                            <i class="el-icon-success"></i>
-                            <span>订单列表</span>
-                        </el-menu-item>
-                    </el-submenu>
-                    <el-submenu index="5">
-                        <template slot="title">
-                            <i class="el-icon-location"></i>
-                            <span>数据统计</span>
-                        </template>
-                        <el-menu-item index="1-1">
-                            <i class="el-icon-success"></i>
-                            <span>数据1</span>
-                        </el-menu-item>
                     </el-submenu>
                 </el-menu>
             </el-aside>
@@ -99,7 +49,8 @@
 export default {
   data () {
     return {
-
+        // 左侧菜单数据。
+        menu: []
     }
   },
   methods: {
@@ -107,7 +58,17 @@ export default {
           localStorage.clear()
           this.$message.success('退出成功')
           this.$router.push('/login')
+      },
+      // 左侧导航修改，从数据库获取左侧菜单数据。。
+      async getAsideMenu() {
+          const res = await this.$http.get('menus')
+          this.menu=res.data.data
+          // console.log(res)
       }
+  },
+  created() {
+      // 调用获取左侧菜单的方法。
+      this.getAsideMenu()
   },
   beforeCreate () {
       // 判断 是否有token。如果没有直接返回登录页。

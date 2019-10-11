@@ -30,11 +30,11 @@ export default new Router({
           component: Users
         },
         {
-          path: '/right',
+          path: '/rights',
           component: Right
         },
         {
-          path: '/role',
+          path: '/roles',
           component: Role
         }
       ]
