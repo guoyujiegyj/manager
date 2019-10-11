@@ -124,7 +124,7 @@
       <el-form-item label="用户角色" :label-width="formLabelWidth">
         <!-- 当select的v-model和option的value一样时，第一个option显示对应 的值。-->
         <el-select v-model="currentRolId" placeholder="请选择活动区域">
-          <!-- <el-option label="请选择" :value="-1"></el-option> -->
+          <el-option label="请选择" :value="-1"></el-option>
           <!-- lable的值是option可以看到的值。value值是option内隐藏的值。-->
           <el-option :label="item.roleName" v-for="(item,i) in roles" :key="i" :value="item.id"></el-option>
         </el-select>
@@ -189,7 +189,6 @@ export default {
         this.$message.success(res.data.meta.msg)
         
         this.dialogFormVisibleEdit = false
-
       }
     },
     // 获取用户数据。
@@ -273,10 +272,16 @@ export default {
     },
     // 修改用户状态
     async changeStatus(user) {
+      console.log(user)
+       // users/:uId/state/:type
       const res = await this.$http.put(`users/${user.id}/state/${user.mg_state}`)
       console.log(res)
-      if(res.data.meta.statu===200) {
-        this.$message.success(this.data.meta.msg)
+      if(res.data.meta.status===200) {
+        this.$message.success(res.data.meta.msg)
+      }else{
+        this.$message.warning(res.data.meta.msg)
+        //修改失败时，重新获取用户数据，要不然，状态在视觉上已经切换，数据库却没改。
+        this.getUrlList()
       }
     },
     // 确认修改角色时
@@ -287,22 +292,26 @@ export default {
     },
     // 角色管理
     async openRol(user) {
-      console.log(user)
+      // console.log(user)
       this.currentUserName=user.username
       this.currentUserId=user.id
       this.dialogFormVisibleRol = true
 
       // 发送请求，获取角色列表。
       const res1 = await this.$http.get('roles')
-      console.log(res1)
+      // console.log(res1)
       // 所有角色列表获取成功。
       this.roles=res1.data.data
 
       // 发送请求，获取当前用户角色id
       const res = await this.$http.get(`users/${user.id}`)
+      console.log(res)
       if(res.data.meta.status===200){
          // 当前用户rid获取成功。 
          this.currentRolId=res.data.data.rid
+         console.log(this.currentRolId)
+      }else{
+        this.$message.warning(res.data.meta.msg)
       }
       // const res = await this.$http.
     },

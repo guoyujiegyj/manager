@@ -22,7 +22,7 @@
         <el-container>
             <el-aside class="aside" width="200px">
                 <el-menu unique-opened router>
-                    <el-submenu :index="item1.order" v-for='(item1,index) in menu' :key='index'>
+                    <el-submenu :index=" ''+item1.order " v-for='(item1,index) in menu' :key='index'>
                         <!--一级菜单 -->
                         <template slot="title" >
                             <i class="el-icon-location"></i>
@@ -71,12 +71,13 @@ export default {
       this.getAsideMenu()
   },
   beforeCreate () {
+      // 此段代码修改为在router.js的导航守卫去写。
       // 判断 是否有token。如果没有直接返回登录页。
       // token是防止通过粘贴地址来进行访问此页。因为有可能没有登陆。
-    const token = localStorage.getItem('token')
-    if (!token) {
-      this.$router.push('/login')
-    }
+    // const token = localStorage.getItem('token')
+    // if (!token) {
+    //   this.$router.push('/login')
+    // }
   }
 }
 </script>

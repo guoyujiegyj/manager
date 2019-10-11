@@ -14,7 +14,7 @@ import Role from '@/components/right/Role'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: '/login',
@@ -41,3 +41,21 @@ export default new Router({
     }
   ]
 })
+// 全局前置守卫 ：在 路由配置起作用之前调用。
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('token')
+  if (to.path === '/login') {
+    // 去登录页面不需要验证token。
+    next()
+  } else {
+    // 如果是非login页，只要有token，就正常进行路由跳转，
+    if (token) {
+      next()
+    } else {
+      // 如果没有token，调到登录页面。
+      router.push('/login')
+      this.$message.warning('请先登录')
+    }
+  }
+})
+export default router
